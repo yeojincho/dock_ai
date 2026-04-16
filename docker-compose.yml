@@ -1,0 +1,30 @@
+services:
+  api:        #  api라는 이름의 서비스
+    build: ./api  # Dockerfile의 위치 혹은 이미지 이름을 지정
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/app # 현재 디렉토리를 컨테이너의 /app 디렉토리에 연결해서 동기화하고 저장함(Dockerfile에서 WORKDIR이 /app이므로)
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "33061:3306"
+    volumes:
+      - local_db:/var/lib/mysql  # 컨테이너의 /var/lib/mysql 디렉토리를 local_db 볼륨에 연결
+
+  worker:
+    build: ./worker
+    volumes:
+      - ./worker:/app # 모델이 너무 사이즈가 크니까 이미지를 만들면 또 복사된다. 그래서 모델이 있는 디렉토리를 볼륨으로 연결해서 모델을 복사하지 않고도 사용할 수 있게 함.
+
+
+# 내 컴퓨터의 어딘가에 파일(local_db) 생성
+# 도커에 볼륨은 필수라고 생각하고 쓰는게 좋음. 볼륨을 쓰면 컨테이너가 삭제되어도 데이터는 남아있음. 볼륨을 안쓰면 컨테이너가 삭제되면 데이터도 같이 삭제됨.
+volumes:
+  local_db:

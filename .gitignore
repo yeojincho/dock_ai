@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# ML 모델 파일 (용량이 크므로 제외)
+worker/models/*.gguf
+worker/models/*.bin
+worker/models/*.safetensors
+worker/models/.cache/
+
+# Docker
+.dockerignore
+
+# MySQL / DB
+*.sql
+*.sqlite
+*.db
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
