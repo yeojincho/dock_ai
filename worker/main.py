@@ -27,14 +27,13 @@ def run():
         _, task = redis_clienet.brpop("queue") # rpop:아무것도 없으면 nil 반환, block rpop: 아무것도 없으면 들어올때까지 대기
         
         task_data : dict = json.loads(task)
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        messages.extend(task_data["messages"])
 
 
         # 2) 추론 -> 토큰 -> publish (반복)
         response_generator = llm.create_chat_completion(
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": task_data["user_input"]},
-            ],
+            messages=messages,
             max_tokens=256,
             temperature=0.7,
             stream=True, # 이게 없으면 한번에 오는건데, stream=True이면 제너레이터를 먼저 만든다. 
